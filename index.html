@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EditorJS Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/paragraph@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/embed@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/delimiter@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/quote@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/warning@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/marker@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>EditorJS</h1>
+    <div class="container">
+        <div id="editorjs"></div>
+
+        <div id="content"></div>
+    </div>
+    <div  onclick="myFunction()" class="btn">Save</div>
+    <script src="editor.js"></script>
+    <h1>*****</h1>
+
+    <script>
+        function myFunction(){
+            editor.save().then((output) => {
+                console.log('Data: ', output);
+                var html = '';
+                output.blocks.forEach(function(block) {
+                switch (block.type) {
+                    case 'header':
+                    html += `<h${block.data.level}>${block.data.text}</h${block.data.level}>`;
+                    break;
+                    case 'paragraph':
+                    html += `<p>${block.data.text}</p>`;
+                    case 'warning':
+                    html += `
+                        <p>${block.data.title}</p>
+                        <p>${block.data.message}</p>
+                    `;
+                    break;
+                    case 'quote':
+                    html += `
+                        <p>${block.data.text}</p>
+                        <p>${block.data.caption}</p>
+                        <p>${block.data.alignment}</p>
+                    `;
+                    break;
+                    case 'delimiter':
+                    html += '<hr />';
+                    break;
+                    case 'image':
+                    html += `<img class="img-fluid" width="560" height="315" src="${block.data.url}" title="${block.data.caption}" /><br /><em>${block.data.caption}</em>`;
+                    break;
+                    case "embed":
+                    html += `<div><iframe width="560" height="315" src="${block.data.embed}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+                    break;
+                    case 'list':
+                    html += '<ul>';
+                    block.data.items.forEach(function(li) {
+                        html += `<li>${li}</li>`;
+                    });
+                    html += '</ul>';
+                    break;
+                    case 'checklist':
+                    html += '<ul>';
+                    block.data.items.forEach(function(li) {
+                        if (li.checked){
+                            html += `<label>${li.text}</label><input type="checkbox" checked> <br>`;
+                        }else {
+                            html += `<label>${li.text}</label><input type="checkbox"> <br>`;
+                        }
+                    });
+                    html += '</ul>';
+                    break;
+                    default:
+                    console.log('Unknown block type', block.type);
+                    console.log(block);
+                    break;
+                }
+                document.getElementById('content').innerHTML = html;
+                //console.log(block);
+                });
+                console.log('html: ', html);
+            }).catch((error) => {
+                console.log('Saving failed: ', error)
+            });
+        }
+    </script>
+</body>
+</html>
