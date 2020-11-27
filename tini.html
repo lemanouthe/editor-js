@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: '#myeditablediv',
+            plugins: [ 'quickbars' ],
+            toolbar: false,
+            menubar: true,
+            inline: true
+        });
+    </script>
+    <script src="jquery.js"></script>
+</head>
+
+<body>
+    <h1>TinyMCE Inline Editing Mode Guide</h1>
+    <form method="post" id="exercicepr">
+        <div id="myeditablediv">Click here to edit!</div>
+
+        <button type="button" @click="addexercicepr" class="btn-more-question mr-3">Enregistrer et ajouter</button>
+    </form>
+
+
+    <script src='https://cdn.jsdelivr.net/npm/vue/dist/vue.js'></script>
+    <script>
+        new Vue({
+            el: '#exercicepr',
+            data: {
+            },
+            delimiters: ["${", "}"],
+            mounted(){
+            },
+            methods: {
+                addexercicepr(){
+                    var iframe_enonce = $('#myeditablediv');
+                    var enonce = iframe_enonce[0].innerHTML;
+                    console.log(enonce)
+                },
+            },
+        })
+    </script>
+</body>
+</html>
